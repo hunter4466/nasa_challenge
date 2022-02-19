@@ -9,7 +9,8 @@ interface ProvidePhotoListUseCase {
     fun execute(): Flow<List<MarsPhoto>>
 }
 
-class ProvidePhotoListUseCaseImpl @Inject constructor(private val repo: MainRepository) : ProvidePhotoListUseCase {
+class ProvidePhotoListUseCaseImpl @Inject constructor(private val repo: MainRepository) :
+    ProvidePhotoListUseCase {
     override fun execute(): Flow<List<MarsPhoto>> {
         return repo.providePhotosList()
     }
