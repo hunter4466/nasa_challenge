@@ -12,7 +12,7 @@ import javax.inject.Singleton
 class DataUseCasesModule {
     @Provides
     @Singleton
-    fun providePhotolistUseCase (
+    fun providePhotolistUseCase(
         providePhotoListUseCaseImpl: ProvidePhotoListUseCaseImpl
     ): ProvidePhotoListUseCase {
         return providePhotoListUseCaseImpl
@@ -20,25 +20,82 @@ class DataUseCasesModule {
 
     @Provides
     @Singleton
-    fun provideEnlargedPhotoUseCase (
+    fun provideEnlargedPhotoUseCase(
         provideEnlargedPhotoUseCaseImpl: ProvideEnlargedPhotoUseCaseImpl
-    ) : ProvideEnlargedPhotoUseCase {
+    ): ProvideEnlargedPhotoUseCase {
         return provideEnlargedPhotoUseCaseImpl
     }
 
     @Provides
     @Singleton
-    fun provideFilterNamesUseCase (
+    fun provideFilterNamesUseCase(
         provideFilterNamesUseCaseImpl: ProvideFilterNamesUseCaseImpl
-    ) : ProvideFilterNamesUseCase {
+    ): ProvideFilterNamesUseCase {
         return provideFilterNamesUseCaseImpl
     }
 
     @Provides
     @Singleton
-    fun filterByCameraName (
+    fun filterByCameraNameUseCase(
         filterByCameraNameUseCaseImpl: FilterByCameraNameUseCaseImpl
-    ) : FilterByCameraNameUseCase {
+    ): FilterByCameraNameUseCase {
         return filterByCameraNameUseCaseImpl
     }
+
+    @Provides
+    @Singleton
+    fun clearFilterUseCase(
+        clearFilterUseCaseImpl: ClearFilterUseCaseImpl
+    ): ClearFilterUseCase {
+        return clearFilterUseCaseImpl
+    }
+
+    @Provides
+    @Singleton
+    fun loadFromApiAndSetIntoDatabaseUseCase(
+        loadFromApiAndSetIntoDatabaseUseCaseImpl: LoadFromApiAndSetIntoDatabaseUseCaseImpl
+    ): LoadFromApiAndSetIntoDatabaseUseCase {
+        return loadFromApiAndSetIntoDatabaseUseCaseImpl
+    }
+
+    @Provides
+    @Singleton
+    fun requestNewSolUseCase(
+        requestNewSolUseCaseImpl: RequestNewSolUseCaseImpl
+    ): RequestNewSolUseCase {
+        return requestNewSolUseCaseImpl
+    }
+
+    @Provides
+    @Singleton
+    fun provideLoadingStateUseCase(
+        provideLoadingStateUseCaseImpl: ProvideLoadingStateUseCaseImpl
+    ): ProvideLoadingStateUseCase {
+        return provideLoadingStateUseCaseImpl
+    }
+
+    @Provides
+    @Singleton
+    fun provideNoPhotosFoundStateUseCase(
+        provideNoPhotosFoundStateUseCaseImpl: ProvideNoPhotosFoundStateUseCaseImpl
+    ): ProvideNoPhotosFoundStateUseCase {
+        return provideNoPhotosFoundStateUseCaseImpl
+    }
+
+    @Provides
+    @Singleton
+    fun provideRefreshStateUseCase(
+        provideRefreshStateUseCaseImpl: ProvideRefreshStateUseCaseImpl
+    ): ProvideRefreshStateUseCase {
+        return provideRefreshStateUseCaseImpl
+    }
+
+    @Provides
+    @Singleton
+    fun refreshDataUseCase(
+        refreshDataUseCaseImpl: RefreshDataUseCaseImpl
+    ): RefreshDataUseCase {
+        return refreshDataUseCaseImpl
+    }
+
 }

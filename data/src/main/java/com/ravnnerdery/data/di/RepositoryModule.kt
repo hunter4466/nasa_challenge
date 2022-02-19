@@ -6,14 +6,16 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Provides
     @Singleton
-    fun provideMainRepositoryImpl (repository: MainRepositoryImpl): MainRepository {
+    fun provideMainRepositoryImpl(repository: MainRepositoryImpl): MainRepository {
         return repository
     }
 }

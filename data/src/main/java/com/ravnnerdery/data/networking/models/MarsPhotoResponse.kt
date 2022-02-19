@@ -1,6 +1,5 @@
 package com.ravnnerdery.data.networking.models
 
-
 class MarsPhotoResponse(
     var id: Long,
     var sol: Long,

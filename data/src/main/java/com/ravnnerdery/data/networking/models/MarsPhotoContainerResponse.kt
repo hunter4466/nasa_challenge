@@ -1,5 +1,5 @@
 package com.ravnnerdery.data.networking.models
 
-class MarsPhotoContainerResponse (
+class MarsPhotoContainerResponse(
     var photos: List<MarsPhotoResponse>
 )

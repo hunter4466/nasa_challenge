@@ -9,7 +9,6 @@ import coil.compose.rememberImagePainter
 @Composable
 fun EnlargedPhotoListItem(imgSrc: String) {
     Image(
-
         painter = rememberImagePainter(
             data = imgSrc,
         ),
