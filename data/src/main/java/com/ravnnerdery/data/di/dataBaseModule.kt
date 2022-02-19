@@ -18,12 +18,13 @@ private const val NASA_DATABASE = "Nasa_dbase2"
 class DatabaseModule {
     @Provides
     @Singleton
-    fun provideDatabaseDao (photosDatabase: NasaDatabase): DatabaseDao {
+    fun provideDatabaseDao(photosDatabase: NasaDatabase): DatabaseDao {
         return photosDatabase.databaseDao()
     }
+
     @Provides
     @Singleton
-    fun provideNasaDatabase (@ApplicationContext appContext: Context) : NasaDatabase {
+    fun provideNasaDatabase(@ApplicationContext appContext: Context): NasaDatabase {
         return Room.databaseBuilder(
             appContext,
             NasaDatabase::class.java,

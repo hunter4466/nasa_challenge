@@ -21,7 +21,7 @@ interface DatabaseDao {
     @Query("SELECT * from photo_table WHERE id = :key")
     fun getEnlargedPhoto(key: Long): MarsPhotoEntity
 
-    @Query("SELECT distinct camera FROM photo_table")
+    @Query("SELECT distinct cameraCode FROM photo_table")
     fun getAllCameraNames(): List<String>
 
 }
