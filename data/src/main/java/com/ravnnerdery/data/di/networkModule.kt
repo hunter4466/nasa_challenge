@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetWorkModule {
-    private const val BASE_URL = "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/"
+    private const val BASE_URL = "https://api.nasa.gov/mars-photos/api/v1/"
 
     private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
@@ -35,5 +35,4 @@ object NetWorkModule {
         }
         return retrofitService
     }
-
 }
