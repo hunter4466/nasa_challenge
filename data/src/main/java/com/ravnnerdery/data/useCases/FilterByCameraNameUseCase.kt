@@ -7,7 +7,8 @@ interface FilterByCameraNameUseCase {
     fun execute(camera: String)
 }
 
-class FilterByCameraNameUseCaseImpl @Inject constructor(private val repo: MainRepository): FilterByCameraNameUseCase {
+class FilterByCameraNameUseCaseImpl @Inject constructor(private val repo: MainRepository) :
+    FilterByCameraNameUseCase {
     override fun execute(camera: String) {
         repo.filterByCameraName(camera)
     }

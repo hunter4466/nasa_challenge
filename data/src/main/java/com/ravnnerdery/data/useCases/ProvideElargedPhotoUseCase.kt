@@ -9,7 +9,8 @@ interface ProvideEnlargedPhotoUseCase {
     fun execute(id: Long): Flow<MarsPhoto>
 }
 
-class ProvideEnlargedPhotoUseCaseImpl @Inject constructor(private val repo: MainRepository) : ProvideEnlargedPhotoUseCase {
+class ProvideEnlargedPhotoUseCaseImpl @Inject constructor(private val repo: MainRepository) :
+    ProvideEnlargedPhotoUseCase {
     override fun execute(id: Long): Flow<MarsPhoto> {
         return repo.provideEnlargedPhoto(id)
     }

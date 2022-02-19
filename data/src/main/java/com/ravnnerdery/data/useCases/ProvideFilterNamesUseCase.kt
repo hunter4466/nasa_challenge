@@ -8,9 +8,9 @@ interface ProvideFilterNamesUseCase {
     fun execute(): Flow<List<String>>
 }
 
-class ProvideFilterNamesUseCaseImpl @Inject constructor(private val repo: MainRepository): ProvideFilterNamesUseCase {
+class ProvideFilterNamesUseCaseImpl @Inject constructor(private val repo: MainRepository) :
+    ProvideFilterNamesUseCase {
     override fun execute(): Flow<List<String>> {
         return repo.provideFilterNames()
     }
-
 }
