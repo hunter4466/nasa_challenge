@@ -19,35 +19,57 @@ class MainRepositoryImpl @Inject constructor(
     private val photosDao: DatabaseDao,
     private val photosApi: NasaApiService,
 ) : MainRepository {
+    private lateinit var allPhotosBackUp: List<MarsPhoto>
+    private var refreshSolMemory: String = ""
+    private var refreshRoverMemory: String = ""
     private var repositoryJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + repositoryJob)
     private var allPhotosContainer = MutableStateFlow<List<MarsPhoto>>(emptyList())
-    private lateinit var allPhotosBackUp: List<MarsPhoto>
     private var filterNames = MutableStateFlow<List<String>>(emptyList())
-    private var enlargedPhoto = MutableStateFlow(MarsPhoto(0,0,"null","null","null"))
+    private var enlargedPhoto = MutableStateFlow(MarsPhoto(0, 0, "null", "null", "null", "null"))
+    private var loadingState = MutableStateFlow(false)
+    private var noPhotosFoundState = MutableStateFlow("")
+    private var refreshState = MutableStateFlow(false)
 
-    init {
-        loadFromApiAndSetIntoDatabase()
-    }
 
-    override fun filterByCameraName(camera: String) {
-        allPhotosContainer.value = allPhotosBackUp.filter {
-            it.camera == camera
-        }
-    }
+    override fun provideNoPhotosFoundState(): MutableStateFlow<String> = noPhotosFoundState
 
     override fun providePhotosList(): MutableStateFlow<List<MarsPhoto>> = allPhotosContainer
 
     override fun provideFilterNames(): MutableStateFlow<List<String>> = filterNames
 
+    override fun provideLoadingState(): MutableStateFlow<Boolean> = loadingState
+
+    override fun provideRefreshState(): MutableStateFlow<Boolean> = refreshState
+
+
+    override fun requestNewSol() {
+        allPhotosContainer.value = emptyList()
+    }
+
+    override fun clearFilter() {
+        allPhotosContainer.value = allPhotosBackUp
+    }
+
+    override fun filterByCameraName(camera: String) {
+        allPhotosContainer.value = allPhotosBackUp.filter {
+            it.cameraCode == camera
+        }
+    }
+
+    override fun refreshData() {
+        loadFromApiAndSetIntoDatabase(refreshSolMemory, refreshRoverMemory, true)
+    }
+
     override fun provideEnlargedPhoto(id: Long): MutableStateFlow<MarsPhoto> {
-        uiScope.launch(Dispatchers.IO){
+        loadingState.value = true
+        uiScope.launch(Dispatchers.IO) {
             val tempContainer = photosDao.getEnlargedPhoto(id).mapToDomainModel()
             enlargedPhoto.value = tempContainer
+            loadingState.value = false
         }
         return enlargedPhoto
     }
-
 
     override fun loadAllPhotosFromDatabase() {
         uiScope.launch(Dispatchers.IO) {
@@ -59,26 +81,38 @@ class MainRepositoryImpl @Inject constructor(
             }
             allPhotosContainer.value = convertedLatestPhotos
             allPhotosBackUp = convertedLatestPhotos
+            loadingState.value = false
+            refreshState.value = false
         }
     }
 
 
-    override fun loadFromApiAndSetIntoDatabase() {
-        uiScope.launch(Dispatchers.IO){
-            photosDao.truncateDatabase()
-            loadFromApiAndSetIntoDatabase()
+    override fun loadFromApiAndSetIntoDatabase(sol: String, rover: String, isRefreshing: Boolean) {
+        refreshSolMemory = sol
+        refreshRoverMemory = rover
+        if (isRefreshing) {
+            refreshState.value = true
+        } else {
+            loadingState.value = true
         }
-        photosApi.getPhotos("1002").enqueue(object : Callback<MarsPhotoContainerResponse> {
+        uiScope.launch(Dispatchers.IO) {
+            photosDao.truncateDatabase()
+        }
+        photosApi.getPhotos(rover, sol).enqueue(object : Callback<MarsPhotoContainerResponse> {
             override fun onResponse(
                 call: Call<MarsPhotoContainerResponse>,
                 response: Response<MarsPhotoContainerResponse>
             ) {
+                if (response.body()?.photos?.isEmpty() == true) {
+                    noPhotosFoundState.value = "No Photos Found with this sol, please try again"
+                }
                 response.body()?.photos?.forEach { elm ->
                     addPhotoToDatabase(
                         elm.id,
                         elm.sol,
                         elm.rover.name,
                         elm.camera.full_name,
+                        elm.camera.name,
                         elm.img_src
                     )
                 }
@@ -89,15 +123,14 @@ class MainRepositoryImpl @Inject constructor(
                 Log.v("Network Response: ", t.message.toString())
             }
         })
-
     }
-
 
     private fun addPhotoToDatabase(
         id: Long,
         sol: Long,
         rover: String,
         camera: String,
+        cameraCode: String,
         imgUrl: String
     ) {
         uiScope.launch(Dispatchers.IO) {
@@ -106,6 +139,7 @@ class MainRepositoryImpl @Inject constructor(
                 sol = sol,
                 rover = rover,
                 camera = camera,
+                cameraCode = cameraCode,
                 imgUrl = imgUrl
             )
             photosDao.insertPhoto(newPhoto)
