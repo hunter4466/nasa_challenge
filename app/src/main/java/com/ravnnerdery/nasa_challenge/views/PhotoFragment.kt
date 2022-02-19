@@ -1,5 +1,6 @@
 package com.ravnnerdery.nasa_challenge.views
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,8 +10,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
+import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import com.ravnnerdery.domain.models.MarsPhoto
-import com.ravnnerdery.nasa_challenge.ui.components.EnlargedPhotoListItem
+import com.ravnnerdery.nasa_challenge.ui.app.EnlargedPhoto
 import com.ravnnerdery.nasa_challenge.viewModels.PhotoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,12 +30,37 @@ class PhotoFragment : Fragment() {
         val view = ComposeView(requireContext())
         val args = PhotoFragmentArgs.fromBundle(requireArguments())
         val enlargedPhoto = photoViewModel.enlargedPhoto(args.imgId)
-        view.setContent {
-            val enlargedPhotoState by enlargedPhoto.collectAsState(initial = MarsPhoto(0,0,"null","null","null"))
-            EnlargedPhotoListItem(enlargedPhotoState.imgUrl)
-        }
-    return view
-}
+        view.apply {
+            setContent {
+                val imageLoader = ImageLoader.Builder(context)
+                    .componentRegistry {
+                        if (Build.VERSION.SDK_INT >= 28) {
+                            add(ImageDecoderDecoder(context))
+                        } else {
+                            add(GifDecoder())
+                        }
+                    }
+                    .build()
+                val enlargedPhotoState by enlargedPhoto.collectAsState(
+                    initial = MarsPhoto(
+                        0,
+                        0,
+                        "null",
+                        "null",
+                        "null",
+                        "null"
+                    )
+                )
+                val loadingState by photoViewModel.observableLoadingState.collectAsState(initial = false)
 
+                EnlargedPhoto(
+                    photoState = enlargedPhotoState,
+                    imageLoader = imageLoader,
+                    loadingState = loadingState,
+                )
+            }
+        }
+        return view
+    }
 }
 
