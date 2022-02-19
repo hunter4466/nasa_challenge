@@ -77,9 +77,6 @@ dependencies {
     // Android KTX
     implementation "androidx.core:core-ktx:$version_core"
 
-    // COIL
-    implementation("io.coil-kt:coil-compose:1.4.0")
-
     kapt "androidx.room:room-compiler:$version_room"
     implementation "androidx.room:room-runtime:$version_room"
     implementation "androidx.room:room-ktx:$version_room"
@@ -107,6 +104,17 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$version_compose"
     // Flow Layout
     implementation "com.google.accompanist:accompanist-flowlayout:0.24.2-alpha"
+    // Constraint Layout
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02"
+    // COIL
+    implementation("io.coil-kt:coil-compose:1.4.0")
+    implementation("io.coil-kt:coil-gif:1.4.0")
+    // Swipe refresh
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.19.0"
 
+    //Pager
+    implementation "com.google.accompanist:accompanist-pager:0.24.2-alpha"
+
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.24.2-alpha"
 
 }
